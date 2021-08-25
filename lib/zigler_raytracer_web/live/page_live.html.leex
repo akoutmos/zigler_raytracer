@@ -1,48 +1,19 @@
 <section class="phx-hero">
-  <h1>Welcome to Phoenix!</h1>
-  <p>Peace of mind from prototype to production</p>
+  <h1>Welcome to Phoenix RayTracer!</h1>
 
-  <form phx-change="suggest" phx-submit="search">
-    <input type="text" name="q" value="<%= @query %>" placeholder="Live dependency search" list="results" autocomplete="off"/>
-    <datalist id="results">
-      <%= for {app, _vsn} <- @results do %>
-        <option value="<%= app %>"><%= app %></option>
-      <% end %>
-    </datalist>
-    <button type="submit" phx-disable-with="Searching...">Go to Hexdocs</button>
-  </form>
-</section>
+  <div >
+    <div style="margin-bottom: 5px">
+      <button style="margin-bottom: 0" phx-click="left">Up</button>
+    </div>
 
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.5/CHANGELOG.md">v1.5 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-    </ul>
-  </article>
+    <div style="display: flex; align-items: center; justify-content: center;">
+      <button style="margin-right: 5px" phx-click="down">Left</button>
+      <img src="data:image/png;base64,<%= @image %>" alt="Ray traced image" width="500" height="500" />
+      <button style="margin-left: 5px" phx-click="up">Right</button>
+    </div>
+
+    <div style="margin-top: 5px">
+      <button phx-click="right">Down</button>
+    </div>
+  </div>
 </section>

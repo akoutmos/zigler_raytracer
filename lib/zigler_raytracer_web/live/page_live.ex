@@ -1,39 +1,51 @@
 defmodule ZiglerRaytracerWeb.PageLive do
   use ZiglerRaytracerWeb, :live_view
 
+  @shift_factor 10
+
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, query: "", results: %{})}
+    image = generate_image(1, 1)
+
+    {:ok, assign(socket, image: image, x: 1, y: 1)}
   end
 
   @impl true
-  def handle_event("suggest", %{"q" => query}, socket) do
-    {:noreply, assign(socket, results: search(query), query: query)}
+  def handle_event("up", _, socket) do
+    new_y = socket.assigns.y + @shift_factor
+    image = generate_image(socket.assigns.x, new_y)
+
+    {:noreply, assign(socket, y: new_y, image: image)}
   end
 
-  @impl true
-  def handle_event("search", %{"q" => query}, socket) do
-    case search(query) do
-      %{^query => vsn} ->
-        {:noreply, redirect(socket, external: "https://hexdocs.pm/#{query}/#{vsn}")}
+  def handle_event("down", _, socket) do
+    new_y = socket.assigns.y - @shift_factor
+    image = generate_image(socket.assigns.x, new_y)
 
-      _ ->
-        {:noreply,
-         socket
-         |> put_flash(:error, "No dependencies found matching \"#{query}\"")
-         |> assign(results: %{}, query: query)}
-    end
+    {:noreply, assign(socket, y: new_y, image: image)}
   end
 
-  defp search(query) do
-    if not ZiglerRaytracerWeb.Endpoint.config(:code_reloader) do
-      raise "action disabled when not in development"
-    end
+  def handle_event("left", _, socket) do
+    new_x = socket.assigns.x - @shift_factor
+    image = generate_image(new_x, socket.assigns.y)
 
-    for {app, desc, vsn} <- Application.started_applications(),
-        app = to_string(app),
-        String.starts_with?(app, query) and not List.starts_with?(desc, ~c"ERTS"),
-        into: %{},
-        do: {app, vsn}
+    {:noreply, assign(socket, x: new_x, image: image)}
+  end
+
+  def handle_event("right", _, socket) do
+    new_x = socket.assigns.x + @shift_factor
+    image = generate_image(new_x, socket.assigns.y)
+
+    {:noreply, assign(socket, x: new_x, image: image)}
+  end
+
+  defp generate_image(x, y) do
+    Pngex.new()
+    |> Pngex.set_type(:rgb)
+    |> Pngex.set_depth(:depth8)
+    |> Pngex.set_size(500, 500)
+    |> Pngex.generate(ZiglerRaytracer.ray_trace(x, y))
+    |> :erlang.list_to_binary()
+    |> Base.encode64()
   end
 end
