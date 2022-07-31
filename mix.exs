@@ -33,7 +33,7 @@ defmodule ZiglerRaytracer.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:zigler, "~> 0.7.3", runtime_only: true},
+      {:zigler, "~> 0.9.1", runtime: false},
       {:pngex, "~> 0.1.1"},
       {:phoenix, "~> 1.5.12"},
       {:phoenix_live_view, "~> 0.15.1"},

@@ -1,5 +1,5 @@
 defmodule ZiglerRaytracer.RayTracer do
-  use Zig, local_zig: true
+  use Zig #, local_zig: true
 
   ~Z"""
   const INF = 100000000;
@@ -81,7 +81,11 @@ defmodule ZiglerRaytracer.RayTracer do
       }
     }
 
-    var tuple_slice: []beam.term = beam.allocator.alloc(beam.term, 3) catch |err| return 0;
+
+    var tuple_slice: []beam.term = beam.allocator.alloc(beam.term, 3) catch {
+      return beam.raise_enomem(env);
+    };
+
     defer beam.allocator.free(tuple_slice);
 
     tuple_slice[0] = beam.make_i32(env, @floatToInt(i32, pixel_color.r * 255.0));
